@@ -1,0 +1,38 @@
+.container {
+    position: relative;
+    width: 200px; /* Adjust size as needed */
+    height: 200px; /* Adjust size as needed */
+}
+
+.card {
+    width: 110px;
+    height: 50px;
+    background: #EEE;
+    border: 1px solid #BBB;
+    border-radius: 3px;
+    padding: 3px 5px;
+    font-family: sans-serif;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: box-shadow 0.4s;
+    box-shadow: 3px 3px 10px grey;
+}
+
+@keyframes cardBouncing {
+    from {
+        transform: translate(-50%, -50%) rotate3d(0, 0, 1, 60deg);
+        transform-origin: top left;
+        animation-timing-function: ease-in-out;
+    }
+    to {
+        transform: translate(-50%, -50%) rotate3d(0, 0, 1, 80deg);
+        transform-origin: top left;
+        animation-timing-function: ease-in-out;
+    }
+}
+
+.card:hover {
+    animation: 0.4s cardBouncing infinite alternate-reverse;
+}

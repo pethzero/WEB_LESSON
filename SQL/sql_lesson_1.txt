@@ -1,0 +1,52 @@
+SELECT 
+    a.id,
+    a.status,
+    a.building,
+    a.[zone],
+    a.locker,
+    a.cell,
+    name = (
+        SELECT ',' +
+            CASE
+                WHEN r.request_by = c.UserID THEN r.request_by+' '+c.FirstNameE + ' ' + c.LastNameE
+                ELSE r.request_by
+            END
+        FROM 
+            locker_record r
+        LEFT JOIN 
+            tblUsers c ON c.UserID = r.request_by
+        WHERE 
+            r.locker_id  = a.id
+        ORDER BY 
+            r.request_by ASC
+        FOR XML PATH(''), TYPE
+    ),
+    h.headcount
+FROM 
+    locker_management a
+LEFT JOIN 
+    (SELECT 
+        locker_id, 
+        COUNT(*) AS headcount
+     FROM 
+        locker_record
+     GROUP BY 
+        locker_id
+    ) h ON a.id = h.locker_id
+WHERE 
+    a.id IS NOT NULL
+GROUP BY 
+    a.id,
+    a.status,
+    a.building,
+    a.[zone],
+    a.locker,
+    a.cell,
+    h.headcount
+HAVING 
+    h.headcount > 1
+ORDER BY 
+    a.building,
+    a.[zone],
+    a.locker,
+    a.cell;
