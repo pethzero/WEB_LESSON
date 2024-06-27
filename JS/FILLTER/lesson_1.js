@@ -30,3 +30,4 @@ const filteredSomeItems = items.filter(x => [5, 1, 2].some(y => y == x.status));
 
 // แสดงผล
 console.log(filteredSomeItems);
+
