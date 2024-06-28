@@ -1,0 +1,6 @@
+คอมไพล์ TypeScript เป็น JavaScript:
+npx tsc
+
+D:\TEST\WEB_LESSON\TS>npx tsc money.TS     
+
+D:\TEST\WEB_LESSON\TS>node money.TS.js     
