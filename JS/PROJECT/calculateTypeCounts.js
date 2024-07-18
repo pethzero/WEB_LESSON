@@ -1,5 +1,15 @@
 // calculateTypeCounts.js
+const temp_tb_data = [
+    { type: 'A' },
+    { type: 'B' },
+    { type: 'A' },
+    { type: 'C' },
+    { type: 'B' },
+    { type: 'A' }
+];
 
+
+// ตัวอย่างการใช้งานฟังก์ชัน
 function calculateTypeCounts(temp_tb_data) {
     const typeCounts = temp_tb_data.reduce((acc, item) => {
         acc[item.type] = (acc[item.type] || 0) + 1;
@@ -14,15 +24,6 @@ function calculateTypeCounts(temp_tb_data) {
     return uniqueTypes;
 }
 
-// ตัวอย่างการใช้งานฟังก์ชัน
-const temp_tb_data = [
-    { type: 'A' },
-    { type: 'B' },
-    { type: 'A' },
-    { type: 'C' },
-    { type: 'B' },
-    { type: 'A' }
-];
 
 const result = calculateTypeCounts(temp_tb_data);
 console.log(result);
