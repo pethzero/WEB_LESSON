@@ -34,7 +34,7 @@ data_2 = [ { "material_no" : "LGP01E-210772CLF", "fg_material_no" : "LGP908-2131
 , ]
 
 
-data_search = [ { "material_no" : "LGP908-213198BTLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "908", "row_no" : 1 ,'status':10 }
+data_search = [ { "material_no" : "LGP908-213198BTLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "908", "row_no" : 1 ,'status':50 }
 , { "material_no" : "LGP01E-213198BTLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E", "row_no" : 2 ,'status':0 }
 , { "material_no" : "LGP01E-210772DLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E", "row_no" : 3 ,'status':0 }
 , { "material_no" : "LGP01E-210772CLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E", "row_no" : 4 ,'status':0 }
@@ -67,23 +67,23 @@ def transform_data(data):
 
 def update_no_in_transformed_data(main_data, reference_data,mode = 1):
     # Create a dictionary to map material_no to its no in reference_data
-    no_mapping = {item['material_no']: item['no'] for item in reference_data}
-
+    data_mapping = {item['material_no']: item['no'] for item in reference_data}
+    frist_status = reference_data[0]['status']
+    # print(reference_data[0]['status'])
     if mode == 0:
-        # # Create a copy of main_data to avoid modifying the original list
+        # Create a copy of main_data to avoid modifying the original list
         updated_data = copy.deepcopy(main_data)
-        # Update the no in the copy of main_data based on the mapping
-        for item in updated_data:
-            if item['material_no'] in no_mapping:
-                item['no'] = no_mapping[item['material_no']]
     else:                
-        # IF NOT COPY
+        # If NOT COPY
         updated_data = main_data
-        for item in main_data:
-            print(item)
-            if item['material_no'] in no_mapping:
-                item['no'] = no_mapping[item['material_no']]
-                
+
+    # Update the no and status in the copy of main_data based on the mapping
+    for index, item in enumerate(updated_data):
+        if item['material_no'] in data_mapping:
+            item['no'] = data_mapping[item['material_no']]
+            if index == 0:
+                item['status'] = frist_status  # Update the status only for the first item
+
     return updated_data
 
 # Transform the main data
@@ -95,9 +95,5 @@ print('-------------------------------------------------------------------------
 if transformed_data_main[0]['type'] != '908':
     transformed_data_reference = transform_data(data_search)
     updated_transformed_data_main = update_no_in_transformed_data(transformed_data_main, transformed_data_reference)
-    print('---------------------------------------------------------------------------')
     for item in transformed_data_main:
         print(item)
-        
-        
-        
