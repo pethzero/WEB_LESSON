@@ -1,13 +1,4 @@
 
-data_search = [ 
-  { "material_no" : "LGP908-213198BTLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "908", "row_no" : 1 ,'status':10 }
-, { "material_no" : "LGP01E-213198BTLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E", "row_no" : 2 ,'status':0 }
-, { "material_no" : "LGP01E-210772DLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E", "row_no" : 3 ,'status':0 }
-, { "material_no" : "LGP01E-210772CLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E", "row_no" : 4 ,'status':0 }
-, { "material_no" : "LGP01S-177134LF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01S", "row_no" : 5 ,'status':0 }
-,  { "material_no" : "ZZZ07I-111ZZZZ", "fg_material_no" : "ZZZ07I-111ZZZZ", "customer" : "ZZZ", "type" : "07I", "status" : None, "seq_no" : None, "row_no" : 68 },
-]
-
 
 
 
@@ -53,34 +44,6 @@ def flatten_data(preprocessed_data):
             result.append(detail)
     return result
 
-# ตัวอย่างข้อมูล
-
-# เรียกใช้ฟังก์ชัน
-# result = preprocess_data(data_1)
-# # print(result)
-# flat_result = flatten_data(result)
-# print(flat_result)
-
-# for x in flat_result:
-#     print(x)
-    
-    
-
-
-data_1 = [
-     { "material_no" : "ZZZ07I-111ZZZZ", "fg_material_no" : "ZZZ07I-111ZZZZ", "customer" : "ZZZ", "type" : "07I", "status" : 10, "seq_no" : 3, "row_no" : 67 },
-    { "material_no" : "ZZZ07I-111ZZZZ", "fg_material_no" : "ZZZ07I-111ZZZZ", "customer" : "ZZZ", "type" : "07I", "status" : 10, "seq_no" : 3, "row_no" : 68 },
-    { "material_no" : "WWW908-111WWWW", "fg_material_no" : "WWW908-111WWWW", "customer" : "WWW", "type" : "908", "status" : None, "seq_no" : None, "row_no" : 69 },
-    { "material_no" : "AAA908-222AAAA", "fg_material_no" : "AAA908-222AAAA", "customer" : "AAA", "type" : "908", "status" : None, "seq_no" : None, "row_no" : 70 },
-    { "material_no" : "AAA01C-222BBBB", "fg_material_no" : "AAA908-222AAAA", "customer" : "AAA", "type" : "01C", "status" : None, "seq_no" : None, "row_no" : 71 },
-    { "material_no" : "CCC908-478CCCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "908", "status" : 10, "seq_no" : 0, "row_no" : 75 },
-    { "material_no" : "CCC01C-478CCCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01C", "status" : 10, "seq_no" : None, "row_no" : 76 },
-    { "material_no" : "CCC01E-2221CCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01E", "status" : None, "seq_no" : 2.1, "row_no" : 77 },
-    { "material_no" : "CCC01B-2222CCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01B", "status" : None, "seq_no" : 1, "row_no" : 78 },
-    { "material_no" : "CCC01P-2223CCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01P", "status" : 10, "seq_no" : 2.2, "row_no" : 79 },
-    { "material_no" : "CCC01P-2223CCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01P", "status" : 10, "seq_no" : None, "row_no" : 80 }
-]
-
 def process_data_dic(data):
     from collections import defaultdict
 
@@ -123,6 +86,39 @@ def process_data_dic(data):
             result.append(detail)
     
     return result
+# ตัวอย่างข้อมูล
+
+# เรียกใช้ฟังก์ชัน
+# result = preprocess_data(data_1)
+# # print(result)
+# flat_result = flatten_data(result)
+# print(flat_result)
+
+# for x in flat_result:
+#     print(x)
+data_refecnce = [ 
+  { "material_no" : "LGP908-213198BTLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "908" ,'status':10, "seq_no" : 0 , "row_no" : 64}
+, { "material_no" : "LGP01E-213198BTLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E" ,'status':10, "seq_no" : None , "row_no" : 65}
+, { "material_no" : "LGP01E-210772DLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E"  ,'status':10, "seq_no" : None , "row_no" : 66}
+, { "material_no" : "LGP01E-210772CLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E"  ,'status':10, "seq_no" : 3 , "row_no" : 67}
+, { "material_no" : "LGP01S-177134LF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01S"   ,'status':10, "seq_no" : 1 , "row_no" : 68}
+]
+
+data_1 = [
+{ "material_no" : "LGP01E-210772CLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E"  ,'status':10, "seq_no" : 3 , "row_no" : 67},
+{ "material_no" : "LGP01S-177134LF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01S"   ,'status':10, "seq_no" : 1 , "row_no" : 68},
+{ "material_no" : "WWW908-111WWWW", "fg_material_no" : "WWW908-111WWWW", "customer" : "WWW", "type" : "908", "status" : None, "seq_no" : None, "row_no" : 69 },
+{ "material_no" : "AAA908-222AAAA", "fg_material_no" : "AAA908-222AAAA", "customer" : "AAA", "type" : "908", "status" : None, "seq_no" : None, "row_no" : 70 },
+{ "material_no" : "AAA01C-222BBBB", "fg_material_no" : "AAA908-222AAAA", "customer" : "AAA", "type" : "01C", "status" : None, "seq_no" : None, "row_no" : 71 },
+{ "material_no" : "CCC908-478CCCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "908", "status" : 10, "seq_no" : 0, "row_no" : 75 },
+{ "material_no" : "CCC01C-478CCCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01C", "status" : 10, "seq_no" : None, "row_no" : 76 },
+{ "material_no" : "CCC01E-2221CCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01E", "status" : None, "seq_no" : 2.1, "row_no" : 77 },
+{ "material_no" : "CCC01B-2222CCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01B", "status" : None, "seq_no" : 1, "row_no" : 78 },
+{ "material_no" : "CCC01P-2223CCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01P", "status" : 10, "seq_no" : 2.2, "row_no" : 79 },
+{ "material_no" : "CCC01P-2223CCC", "fg_material_no" : "CCC908-478CCCC", "customer" : "CCC", "type" : "01P", "status" : 10, "seq_no" : None, "row_no" : 80 }
+]
+
+
 
 def process_data_none_dic(data):
     # จัดกลุ่มข้อมูลตาม fg_material_no
@@ -162,17 +158,26 @@ def process_data_none_dic(data):
                 detail["no"] = no_counter
             result.append(detail)
     return result
-
-
-
-# ทดสอบฟังก์ชัน
-# processed_data = process_data_dic(data_1)
-# for item in processed_data:
-#     print(item)
     
 processed_data = process_data_none_dic(data_1)
-for item in processed_data:
-    print(item)
+process_concent = False
+process_key = None
+for index, item in enumerate(processed_data):
+    if index == 0:
+        if item['type'] != '908':
+            process_key = item['fg_material_no']
+            process_concent = True
+            break
+if process_concent == True:
+    print(process_key)
+    processed_refecnce = process_data_none_dic(data_refecnce)
+    count = sum(1 for item in processed_data if item['fg_material_no'] == process_key)
+    print(count)
+    array1 = processed_refecnce[-count:]  # 2 รายการล่าสุด
+    processed_data[:2] = array1
+    # แสดงผลลัพธ์
+    print('Updated data_r:')
+    for item in processed_data:
+        print(item)
 
-
-
+   
