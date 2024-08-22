@@ -1,0 +1,129 @@
+ในการจำลองการ query ฐานข้อมูลเพื่อให้ได้ผลลัพธ์ตามที่คุณระบุ เราจะใช้ข้อมูลในตาราง `items` ที่มีโครงสร้างดังนี้:
+
+```sql
+CREATE TABLE items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    child VARCHAR(50) NOT NULL,
+    parent VARCHAR(50) NOT NULL,
+    mat CHAR(1)
+);
+```
+
+**ข้อมูลตัวอย่างในตาราง `items`**
+
+| id | child | parent | mat |
+|----|-------|--------|-----|
+| 1  | AA-001 | AA-001 | X   |
+| 2  | AA-002 | AA-001 | Z   |
+| 3  | AA-003 | AA-001 | NULL|
+| 4  | AA-004 | AA-001 | NULL|
+| 5  | BB-001 | BB-001 | NULL|
+| 6  | BB-002 | BB-001 | NULL|
+| 7  | BB-003 | BB-001 | NULL|
+| 8  | BB-004 | BB-001 | NULL|
+
+เราต้องการสร้าง query ที่จะให้ผลลัพธ์เป็นตารางที่มีคอลัมน์ `row_item`, `group_number`, และ `row_number` ตามที่คุณระบุ
+
+**คอลัมน์ที่ต้องการ:**
+- `Child`
+- `Parent`
+- `Mat`
+- `Row_item`
+- `Group_number`
+- `Row_number`
+
+เราจะใช้ `ROW_NUMBER()` ในการจัดลำดับของแต่ละแถวตามลำดับ `child` และ `parent` เพื่อให้ได้ผลลัพธ์ตามที่คุณต้องการ:
+
+```sql
+WITH RankedItems AS (
+    SELECT
+        child,
+        parent,
+        mat,
+        ROW_NUMBER() OVER (PARTITION BY parent ORDER BY id) AS row_item,
+        ROW_NUMBER() OVER (ORDER BY parent, id) AS row_number
+    FROM items
+)
+SELECT
+    child,
+    parent,
+    mat,
+    row_item,
+    ROW_NUMBER() OVER (PARTITION BY parent ORDER BY row_item) AS group_number,
+    row_number
+FROM RankedItems;
+```
+
+**คำอธิบาย:**
+- `ROW_NUMBER() OVER (PARTITION BY parent ORDER BY id)` จะทำการจัดลำดับ `row_item` ภายในกลุ่มของ `parent` ตามลำดับ `id`.
+- `ROW_NUMBER() OVER (ORDER BY parent, id)` จะทำการจัดลำดับ `row_number` ทั่วไปตาม `parent` และ `id`.
+- `ROW_NUMBER() OVER (PARTITION BY parent ORDER BY row_item)` ใช้ในการกำหนด `group_number` ภายในกลุ่มของ `parent`.
+
+คุณสามารถรัน query นี้ในฐานข้อมูลของคุณเพื่อให้ได้ผลลัพธ์ที่คล้ายกับที่คุณระบุไว้.
+
+
+INSERT INTO items (child, parent, mat) VALUES
+('AA-001', 'AA-001', 'X'),
+('AA-002', 'AA-001', 'Z'),
+('AA-003', 'AA-001', NULL),
+('AA-004', 'AA-001', NULL),
+('BB-001', 'BB-001', NULL),
+('BB-002', 'BB-001', NULL),
+('BB-003', 'BB-001', NULL),
+('BB-004', 'BB-001', NULL);
+
+
+Child  | Parent | Mat  | row_item | group_number | row_number
+-------|--------|------|----------|--------------|------------
+AA-001 | AA-001 | X    | 1        | 1            | 1
+AA-001 | AA-001 | Z    | 2        | 1            | 2
+AA-002 | AA-001 | NULL | 3        | 2            | 3
+AA-003 | AA-001 | NULL | 4        | 3            | 4
+BB-001 | BB-001 | NULL | 1        | 1            | 5
+BB-002 | BB-001 | NULL | 2        | 2            | 6
+BB-003 | BB-001 | NULL | 3        | 3            | 7
+BB-004 | BB-001 | NULL | 4        | 4            | 8
+
+EXAMPLE
+
+WITH RankedItems AS (
+    SELECT
+        child,
+        parent,
+        mat,
+        ROW_NUMBER() OVER (PARTITION BY parent ORDER BY child) AS row_item,
+        CASE
+            WHEN mat IS NOT NULL THEN 1
+            ELSE 0
+        END AS is_mat_present
+    FROM items
+),
+GroupStarts AS (
+    SELECT
+        child,
+        parent,
+        mat,
+        row_item,
+        SUM(is_mat_present) OVER (PARTITION BY parent ORDER BY row_item ROWS UNBOUNDED PRECEDING) AS group_start
+    FROM RankedItems
+),
+GroupedItems AS (
+    SELECT
+        child,
+        parent,
+        mat,
+        row_item,
+        ROW_NUMBER() OVER (PARTITION BY parent, group_start ORDER BY row_item) AS group_number,
+        ROW_NUMBER() OVER (ORDER BY parent, row_item) AS row_no
+    FROM GroupStarts
+)
+SELECT
+    child,
+    parent,
+    mat,
+    row_item,
+    group_number,
+    row_no
+FROM GroupedItems
+WHERE row_no > 0 AND row_no <= 100
+ORDER BY parent, row_item;

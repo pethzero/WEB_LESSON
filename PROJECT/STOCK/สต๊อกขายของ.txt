@@ -1,0 +1,109 @@
+ในการเก็บข้อมูลสต๊อกสินค้าสำหรับธุรกิจขนาดเล็ก คุณสามารถใช้ฐานข้อมูลแบบ Relational Database Management System (RDBMS) เช่น MySQL, SQLite, หรือ PostgreSQL เป็นต้น ฐานข้อมูลแบบนี้จะช่วยในการจัดการข้อมูลที่มีความสัมพันธ์ระหว่างกัน เช่น ข้อมูลสินค้า, ข้อมูลสต๊อก, ข้อมูลการขาย และข้อมูลลูกค้า
+
+### โครงสร้างฐานข้อมูล (Database Schema)
+
+นี่คือตัวอย่างโครงสร้างฐานข้อมูลสำหรับระบบจัดการสต๊อกสินค้าสำหรับธุรกิจขนาดเล็ก:
+
+#### 1. **ตาราง `Products` (สินค้า)**
+   - เก็บข้อมูลเกี่ยวกับสินค้าที่ขาย
+   - **ฟิลด์:**
+     - `product_id` (Primary Key): รหัสสินค้าหรือ ID
+     - `name`: ชื่อสินค้า
+     - `description`: รายละเอียดสินค้า
+     - `price`: ราคาสินค้า
+     - `stock_quantity`: จำนวนสินค้าที่มีในสต๊อก
+     - `reorder_level`: ระดับขั้นต่ำของสต๊อกที่จะต้องสั่งซื้อเพิ่ม
+
+   **SQL:**
+   ```sql
+   CREATE TABLE Products (
+       product_id INT AUTO_INCREMENT PRIMARY KEY,
+       name VARCHAR(100) NOT NULL,
+       description TEXT,
+       price DECIMAL(10, 2) NOT NULL,
+       stock_quantity INT NOT NULL,
+       reorder_level INT NOT NULL
+   );
+   ```
+
+#### 2. **ตาราง `Orders` (คำสั่งซื้อ)**
+   - เก็บข้อมูลคำสั่งซื้อที่เกิดขึ้น
+   - **ฟิลด์:**
+     - `order_id` (Primary Key): รหัสคำสั่งซื้อ
+     - `order_date`: วันที่ทำคำสั่งซื้อ
+     - `customer_name`: ชื่อลูกค้า (ในกรณีที่เป็นธุรกิจเล็ก ๆ)
+
+   **SQL:**
+   ```sql
+   CREATE TABLE Orders (
+       order_id INT AUTO_INCREMENT PRIMARY KEY,
+       order_date DATETIME NOT NULL,
+       customer_name VARCHAR(100)
+   );
+   ```
+
+#### 3. **ตาราง `OrderItems` (รายการสินค้าในคำสั่งซื้อ)**
+   - เก็บข้อมูลเกี่ยวกับสินค้าที่มีในแต่ละคำสั่งซื้อ
+   - **ฟิลด์:**
+     - `order_item_id` (Primary Key): รหัสรายการสินค้าในคำสั่งซื้อ
+     - `order_id` (Foreign Key): รหัสคำสั่งซื้อที่อ้างอิงไปยังตาราง `Orders`
+     - `product_id` (Foreign Key): รหัสสินค้าที่อ้างอิงไปยังตาราง `Products`
+     - `quantity`: จำนวนสินค้าที่ถูกสั่งซื้อ
+     - `price_at_purchase`: ราคาสินค้าในตอนที่ทำการซื้อ
+
+   **SQL:**
+   ```sql
+   CREATE TABLE OrderItems (
+       order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+       order_id INT,
+       product_id INT,
+       quantity INT NOT NULL,
+       price_at_purchase DECIMAL(10, 2) NOT NULL,
+       FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+       FOREIGN KEY (product_id) REFERENCES Products(product_id)
+   );
+   ```
+
+#### 4. **ตาราง `Suppliers` (ซัพพลายเออร์)**
+   - เก็บข้อมูลซัพพลายเออร์ที่จัดหาสินค้าให้
+   - **ฟิลด์:**
+     - `supplier_id` (Primary Key): รหัสซัพพลายเออร์
+     - `name`: ชื่อซัพพลายเออร์
+     - `contact_info`: ข้อมูลติดต่อ
+
+   **SQL:**
+   ```sql
+   CREATE TABLE Suppliers (
+       supplier_id INT AUTO_INCREMENT PRIMARY KEY,
+       name VARCHAR(100) NOT NULL,
+       contact_info TEXT
+   );
+   ```
+
+#### 5. **ตาราง `ProductSuppliers` (การเชื่อมโยงระหว่างสินค้าและซัพพลายเออร์)**
+   - เก็บข้อมูลเกี่ยวกับสินค้าที่จัดหาจากซัพพลายเออร์แต่ละราย
+   - **ฟิลด์:**
+     - `product_id` (Foreign Key): รหัสสินค้าที่อ้างอิงไปยังตาราง `Products`
+     - `supplier_id` (Foreign Key): รหัสซัพพลายเออร์ที่อ้างอิงไปยังตาราง `Suppliers`
+     - `cost_price`: ราคาต้นทุนของสินค้า
+
+   **SQL:**
+   ```sql
+   CREATE TABLE ProductSuppliers (
+       product_id INT,
+       supplier_id INT,
+       cost_price DECIMAL(10, 2) NOT NULL,
+       FOREIGN KEY (product_id) REFERENCES Products(product_id),
+       FOREIGN KEY (supplier_id) REFERENCES Suppliers(supplier_id)
+   );
+   ```
+
+### ความสัมพันธ์ระหว่างตาราง:
+- ตาราง `Products` มีความสัมพันธ์แบบ One-to-Many กับ `OrderItems` (สินค้าหนึ่งรายการสามารถมีหลายรายการในคำสั่งซื้อได้)
+- ตาราง `Orders` มีความสัมพันธ์แบบ One-to-Many กับ `OrderItems` (คำสั่งซื้อหนึ่งคำสั่งสามารถมีหลายรายการสินค้า)
+- ตาราง `Products` มีความสัมพันธ์แบบ Many-to-Many กับ `Suppliers` ผ่านตาราง `ProductSuppliers` (สินค้าหนึ่งรายการสามารถมีหลายซัพพลายเออร์ และซัพพลายเออร์หนึ่งรายสามารถจัดหาสินค้าหลายรายการ)
+
+### การเชื่อมต่อกับฐานข้อมูล:
+คุณสามารถเชื่อมต่อกับฐานข้อมูลนี้จากแอปพลิเคชันที่คุณพัฒนา โดยใช้ภาษาโปรแกรมที่คุณถนัด เช่น C#, Java หรือ C++ รวมถึงการใช้ ORM (Object-Relational Mapping) อย่าง Entity Framework (สำหรับ C#) หรือ Hibernate (สำหรับ Java) เพื่อช่วยจัดการและทำงานกับฐานข้อมูลได้ง่ายขึ้น
+
+โดยรวมแล้วโครงสร้างฐานข้อมูลนี้จะช่วยในการจัดการข้อมูลสต๊อกสินค้าสำหรับธุรกิจขนาดเล็ก และสามารถขยายฟีเจอร์ต่างๆ ได้ในอนาคต

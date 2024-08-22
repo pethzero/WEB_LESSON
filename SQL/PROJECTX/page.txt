@@ -1,0 +1,133 @@
+การทำ pagination บนฐานข้อมูลขนาดใหญ่เพื่อให้สามารถดึงข้อมูลได้ในลักษณะของหน้า (pages) เป็นวิธีที่ดีในการจัดการข้อมูลจำนวนมาก โดยเฉพาะเมื่อใช้ร่วมกับการร้องขอจาก frontend ด้วย `fetch` และ Node.js บนเซิร์ฟเวอร์
+
+### แนวทางการทำ Pagination
+
+1. **การทำ Pagination ที่ฝั่งฐานข้อมูล**: ใช้ SQL Query เพื่อดึงข้อมูลเฉพาะที่ต้องการสำหรับแต่ละหน้า ซึ่งช่วยลดปริมาณข้อมูลที่ต้องส่งจากฐานข้อมูลไปยังเซิร์ฟเวอร์และจากเซิร์ฟเวอร์ไปยัง frontend
+
+2. **การทำ Pagination ที่ฝั่งเซิร์ฟเวอร์**: ใช้ Node.js เพื่อจัดการการร้องขอและการแปลงข้อมูลจากฐานข้อมูลให้เป็นรูปแบบที่ใช้งานง่าย
+
+3. **การทำ Pagination ที่ฝั่ง frontend**: ใช้ JavaScript (เช่น `fetch`) เพื่อร้องขอข้อมูลจากเซิร์ฟเวอร์และแสดงข้อมูลตามหน้า
+
+### ตัวอย่างการทำ Pagination
+
+#### 1. Query Pagination ที่ฐานข้อมูล (SQL)
+
+SQL Server, MySQL, PostgreSQL, หรือฐานข้อมูลอื่น ๆ ส่วนใหญ่สนับสนุนการทำ pagination ด้วยการใช้ `LIMIT` และ `OFFSET` หรือ `ROW_NUMBER()`
+
+**ตัวอย่างสำหรับ SQL Server:**
+
+```sql
+-- ดึงข้อมูลสำหรับหน้า 1, ขนาด 20 รายการต่อหน้า
+WITH PaginatedData AS (
+    SELECT
+        *,
+        ROW_NUMBER() OVER (ORDER BY some_column) AS row_num
+    FROM your_table
+)
+SELECT *
+FROM PaginatedData
+WHERE row_num BETWEEN 1 AND 20
+```
+
+**ตัวอย่างสำหรับ MySQL:**
+
+```sql
+-- ดึงข้อมูลสำหรับหน้า 1, ขนาด 20 รายการต่อหน้า
+SELECT *
+FROM your_table
+ORDER BY some_column
+LIMIT 20 OFFSET 0;
+```
+
+**ตัวอย่างสำหรับ PostgreSQL:**
+
+```sql
+-- ดึงข้อมูลสำหรับหน้า 1, ขนาด 20 รายการต่อหน้า
+SELECT *
+FROM your_table
+ORDER BY some_column
+LIMIT 20 OFFSET 0;
+```
+
+#### 2. Node.js Server
+
+ใช้ Express.js (หรือเฟรมเวิร์กที่คุณใช้) เพื่อจัดการการร้องขอและส่งข้อมูล:
+
+**ตัวอย่างสำหรับ Node.js (Express):**
+
+```javascript
+const express = require('express');
+const app = express();
+const port = 3000;
+
+// สมมติว่าคุณมีการเชื่อมต่อกับฐานข้อมูล
+const db = require('./db'); 
+
+app.get('/data', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // หน้าเริ่มต้นคือ 1
+    const pageSize = 20; // ขนาดของข้อมูลต่อหน้า
+    const offset = (page - 1) * pageSize;
+
+    try {
+        const results = await db.query('SELECT * FROM your_table ORDER BY some_column LIMIT $1 OFFSET $2', [pageSize, offset]);
+        res.json(results.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+```
+
+#### 3. Frontend Fetch Request
+
+ใช้ `fetch` ใน HTML/JavaScript เพื่อดึงข้อมูล:
+
+**ตัวอย่างใน JavaScript:**
+
+```javascript
+async function fetchPage(page) {
+    try {
+        const response = await fetch(`/data?page=${page}`);
+        const data = await response.json();
+        // แสดงข้อมูลที่ได้รับใน UI ของคุณ
+        console.log(data);
+    } catch (err) {
+        console.error('Error fetching data:', err);
+    }
+}
+
+// ดึงข้อมูลหน้า 1
+fetchPage(1);
+```
+
+### ข้อดีของการทำ Pagination
+
+- **ลดการโหลดข้อมูล**: ดึงข้อมูลเฉพาะที่จำเป็นสำหรับแต่ละหน้า
+- **เพิ่มประสิทธิภาพ**: ลดปริมาณข้อมูลที่ต้องประมวลผลและส่งไปที่ frontend
+- **ปรับปรุง UX**: ผู้ใช้สามารถเข้าถึงข้อมูลตามความต้องการ
+
+การทำ pagination จึงเป็นวิธีที่มีประสิทธิภาพในการจัดการข้อมูลจำนวนมากและปรับปรุงประสบการณ์ของผู้ใช้ได้ดี.
+
+
+-- สร้างฐานข้อมูล
+CREATE DATABASE sample_db;
+
+-- ใช้ฐานข้อมูลที่สร้างขึ้น
+USE sample_db;
+
+-- สร้างตาราง
+CREATE TABLE items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    quantity INT,
+    price DECIMAL(10, 2)
+);
+
+-- แทรกข้อมูลตัวอย่าง
+INSERT INTO items (name, quantity, price) VALUES
+('Item 1', 10, 19.99),
+('Item 2', 20, 29.99),
+('Item 3', 30, 39.99);

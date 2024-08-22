@@ -1,0 +1,6 @@
+${plant},
+${data[i]['Model']},
+${data[i]['Component']},
+${data[i]['Description']},
+${data[i]['Qty'], 'F'},
+${data[i]['UOM']},
