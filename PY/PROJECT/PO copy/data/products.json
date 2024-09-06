@@ -1,0 +1,11 @@
+{
+    "1": {
+        "product_id": "1",
+        "name": "1",
+        "description": "1",
+        "price": 1.0,
+        "stock_quantity": 11,
+        "category": "1",
+        "supplier": "1"
+    }
+}

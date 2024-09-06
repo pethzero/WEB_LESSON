@@ -1,0 +1,7 @@
+ (keydown)="preventSpace($event)"
+
+   preventSpace(event: KeyboardEvent) {
+    if (event.code === 'Space') {
+      event.preventDefault();
+    }
+  }

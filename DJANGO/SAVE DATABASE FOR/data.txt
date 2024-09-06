@@ -1,0 +1,74 @@
+ถ้าคุณมี `data_detail` เป็นลิสต์ของดิกชันนารีที่แต่ละตัวประกอบด้วยค่า `en` ที่แตกต่างกัน และต้องการสร้างและบันทึกหลายๆ instance ของโมเดล Django ตามข้อมูลในลิสต์นี้ คุณสามารถทำได้ดังนี้:
+
+### ตัวอย่างข้อมูล:
+
+```python
+data_detail = [
+    {'en': '1'},
+    {'en': '2'},
+    {'en': '3'}
+]
+```
+
+### วิธีการใช้ Bulk Creation
+
+1. **การใช้ Bulk Creation:** จะสร้าง instance ทั้งหมดในลิสต์และบันทึกในฐานข้อมูลพร้อมกัน ซึ่งมีประสิทธิภาพสูงสำหรับจำนวนข้อมูลมาก
+
+```python
+from django.utils import timezone
+
+now = timezone.now()
+id_pk = 1  # ตัวอย่างค่า id_pk
+data_detail = [
+    {'en': '1'},
+    {'en': '2'},
+    {'en': '3'}
+]
+
+objs = [
+    OrganizationAdmin(
+        id_organization=id_pk,
+        create_date=now,
+        create_by='example_user',  # สามารถเปลี่ยนค่าเป็นค่าที่ต้องการ
+        en=item['en']
+    )
+    for item in data_detail
+]
+
+# ใช้ bulk_create เพื่อบันทึกทั้งหมดในครั้งเดียว
+OrganizationAdmin.objects.using('op_doc_ctrl').bulk_create(objs)
+```
+
+### วิธีการสร้างและบันทึกแยกกัน
+
+2. **การสร้างและบันทึกแต่ละ instance แยกกัน:** ถ้าคุณต้องการสร้างและบันทึกแต่ละ instance แยกกัน สามารถทำได้ตามนี้:
+
+```python
+from django.utils import timezone
+
+now = timezone.now()
+id_pk = 1  # ตัวอย่างค่า id_pk
+data_detail = [
+    {'en': '1'},
+    {'en': '2'},
+    {'en': '3'}
+]
+
+for item in data_detail:
+    obj_detail = OrganizationAdmin.objects.using('op_doc_ctrl').create(
+        id_organization=id_pk,
+        create_date=now,
+        create_by='example_user',  # สามารถเปลี่ยนค่าเป็นค่าที่ต้องการ
+        en=item['en']
+    )
+    obj_detail.save()  # บันทึกแต่ละ instance
+```
+
+### อธิบาย:
+- **Bulk Creation:** 
+  - สร้างลิสต์ของ instance ตามข้อมูลใน `data_detail` และใช้ `bulk_create()` เพื่อบันทึกทั้งหมดในครั้งเดียว ซึ่งทำให้การจัดการกับข้อมูลจำนวนมากมีประสิทธิภาพ
+
+- **การสร้างและบันทึกแยกกัน:** 
+  - สร้างและบันทึกแต่ละ instance ภายในลูป วิธีนี้จะใช้เวลานานกว่าถ้าจำนวนข้อมูลมาก แต่สะดวกสำหรับกรณีที่ข้อมูลไม่มาก
+
+เลือกวิธีที่เหมาะสมตามจำนวนข้อมูลและความต้องการของคุณครับ

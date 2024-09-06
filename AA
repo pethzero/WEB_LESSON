@@ -1,0 +1,37 @@
+SELECT 
+                            a.id, a.group_name, a.department, a.edit_date, a.edit_by, (d.FirstNameE + ' ' + d.LastNameE) AS edit_name
+                            , b.group_position, b.group_text, b.display_profile, b.seq_no, SUM(b.record_count) AS detail_count
+                            FROM 
+                                OP_DOC_CTRL.dbo.organization_master a
+                            LEFT JOIN 
+                                (
+                                SELECT b.id, b.id_organization, b.id_group, b.en_and_cc, ISNULL(e.FirstNameE + ' ' + e.LastNameE, '') AS record_name
+                                ,c.name AS group_position, c.[text] AS group_text, c.display_profile, c.seq_no, 1 AS record_count
+                                FROM OP_DOC_CTRL.dbo.organization_detail b
+                                LEFT JOIN OP_DOC_CTRL.dbo.organization_group c ON c.id = b.id_group
+                                LEFT JOIN UserCenter.dbo.tblUsers e ON e.UserID = b.en_and_cc
+                                WHERE 
+                                    c.mode = 'A'
+                                UNION ALL
+                                SELECT 
+                                        b.id,b.id_organization, b.id_group, b.en_and_cc, '' AS record_name, c.name AS group_position, c.[text] AS group_text, c.display_profile, c.seq_no,
+                                  CASE WHEN  head_count > 0 then head_count ELSE  
+                                  (SELECT COUNT(*) FROM UserCenter.dbo.tblUsers e WHERE UserID IS NOT NULL AND e.LoginFlag = 'T' AND e.Department LIKE '%' + b.en_and_cc + '%'  AND e.UserGrade LIKE 'N%'  AND e.WorkType ='M')
+                                    +(SELECT COUNT(*) FROM UserCenter.dbo.tblUsers e WHERE UserID IS NOT NULL AND e.LoginFlag = 'T' AND e.Department LIKE '%' + b.en_and_cc + '%' AND e.WorkType ='D' ) END AS record_count
+                                FROM  
+                                    OP_DOC_CTRL.dbo.organization_detail b
+                                LEFT JOIN 
+                                    OP_DOC_CTRL.dbo.organization_group c ON c.id = b.id_group
+                                WHERE 
+                                    c.mode = 'M'
+                                ) b ON b.id_organization = a.id
+                            LEFT JOIN 
+                                UserCenter.dbo.tblUsers d ON d.UserID = a.edit_by
+                            WHERE 
+                                a.id IS NOT NULL and a.plant like 'SVI2%' 
+                            GROUP BY 
+                                a.id,a.group_name,a.department,a.edit_date,a.edit_by,d.FirstNameE,d.LastNameE,b.group_position,b.group_text,b.display_profile,b.seq_no,a.create_date
+                            HAVING 
+                                ISNULL(SUM(b.record_count),0) > 0
+                            ORDER BY 
+                                a.create_date,a.id,b.seq_no
