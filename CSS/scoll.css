@@ -1,0 +1,43 @@
+
+/* ปรับขนาด scrollbar */
+::-webkit-scrollbar {
+    width: 16px; /* ความกว้างของ scrollbar แนวตั้ง */
+    height: 16px; /* ความสูงของ scrollbar แนวนอน */
+}
+
+/* เปลี่ยนสีของ scrollbar track (พื้นหลังของ scrollbar) */
+::-webkit-scrollbar-track {
+    background: #f0f0f0; /* สีพื้นหลัง */
+}
+
+/* ปรับขนาดและเปลี่ยนสีของ thumb (ส่วนที่เลื่อน) */
+::-webkit-scrollbar-thumb {
+    background: #888; /* สีของ thumb */
+    /*background: #7dbd7b; สีของ thumb */
+    border-radius: 8px; /* ปรับเป็นวงรี */
+    /* transition: transform 0.3s ease; /* เพิ่มอนิเมชันสำหรับการขยาย */
+     /* animation: blink-thumb 0.2s infinite alternate; /* เพิ่มการกระพริบสี */
+
+}
+
+/* เปลี่ยนสีเมื่อ hover หรือ active */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* สีของ thumb เมื่อ hover */
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: #333; /* สีของ thumb เมื่อ active */
+}
+
+/* การกระพริบสีของ thumb */
+@keyframes blink-thumb {
+    0% {
+        background-color: #a8f0a6;
+    }
+    50% {
+        background-color: #58ac58; /* สีที่แตกต่างเล็กน้อยเพื่อสร้างการกระพริบ */
+    }
+    100% {
+        background-color: #046900;
+    }
+}
