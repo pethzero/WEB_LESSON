@@ -1,0 +1,20 @@
+{
+    "assembly_id": "A001",
+    "product_id": "P001",
+    "bom_id": "BOM001",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Attach the display screen to the main body.",
+        "duration": "10 minutes",
+        "tools_needed": ["Screwdriver", "Tweezers"]
+      },
+      {
+        "step_number": 2,
+        "description": "Install the battery in the designated compartment.",
+        "duration": "5 minutes",
+        "tools_needed": ["Screwdriver"]
+      }
+    ]
+  }
+  

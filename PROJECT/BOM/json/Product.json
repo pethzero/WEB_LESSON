@@ -1,0 +1,8 @@
+{
+  "product_id": "P001",
+  "name": "Smartphone",
+  "description": "High-end smartphone with a 6.5-inch display.",
+  "version": "V1.0",
+  "category": "Electronics",
+  "unit_of_measure": "unit"
+}

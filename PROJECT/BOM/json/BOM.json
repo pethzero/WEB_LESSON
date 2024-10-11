@@ -1,0 +1,66 @@
+{
+    "bom_id": "BOM001",
+    "product_id": "B001",
+    "components": [
+      {
+        "id": "comp001",
+        "name": "Bicycle",
+        "quantity": 1,
+        "unit_of_measure": "unit",
+        "children": [
+          {
+            "id": "comp002",
+            "name": "Frame",
+            "quantity": 1,
+            "unit_of_measure": "unit",
+            "children": [
+              {
+                "id": "comp003",
+                "name": "Steel Tubes",
+                "quantity": 3,
+                "unit_of_measure": "unit",
+                "children": []
+              },
+              {
+                "id": "comp004",
+                "name": "Welding Rods",
+                "quantity": 10,
+                "unit_of_measure": "unit",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "comp005",
+            "name": "Wheels",
+            "quantity": 2,
+            "unit_of_measure": "unit",
+            "children": [
+              {
+                "id": "comp006",
+                "name": "Rim",
+                "quantity": 1,
+                "unit_of_measure": "unit",
+                "children": []
+              },
+              {
+                "id": "comp007",
+                "name": "Spokes",
+                "quantity": 20,
+                "unit_of_measure": "unit",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "comp008",
+            "name": "Seat",
+            "quantity": 1,
+            "unit_of_measure": "unit",
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+  

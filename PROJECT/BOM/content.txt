@@ -1,0 +1,113 @@
+Bill of Materials (BOM) เป็นเอกสารสำคัญที่ใช้ในการจัดการการผลิต ซึ่งระบุส่วนประกอบทั้งหมดที่จำเป็นในการผลิตผลิตภัณฑ์หนึ่ง ๆ โดยทั่วไป BOM จะประกอบด้วยข้อมูลหลายประเภทเพื่อให้แน่ใจว่าการผลิตเป็นไปตามแผนที่กำหนดไว้ นี่คือสิ่งที่ควรมีใน BOM สำหรับระดับโลกและระดับงานผลิตที่ใช้กันทั่วโลก:
+
+### 1. Product (ผลิตภัณฑ์)
+- **product_id**: รหัสหรือหมายเลขประจำผลิตภัณฑ์
+- **name**: ชื่อผลิตภัณฑ์
+- **description**: คำอธิบายเกี่ยวกับผลิตภัณฑ์
+- **version**: เวอร์ชันหรือรุ่นของผลิตภัณฑ์
+- **category**: หมวดหมู่ของผลิตภัณฑ์
+- **unit_of_measure**: หน่วยวัดของผลิตภัณฑ์ (เช่น ชิ้น, กิโลกรัม)
+
+```json
+{
+  "product_id": "P001",
+  "name": "Smartphone",
+  "description": "High-end smartphone with a 6.5-inch display.",
+  "version": "V1.0",
+  "category": "Electronics",
+  "unit_of_measure": "unit"
+}
+```
+
+### 2. BOM (รายการวัสดุ)
+- **bom_id**: รหัสหรือหมายเลขประจำ BOM
+- **product_id**: รหัสผลิตภัณฑ์ที่ BOM นี้อ้างอิง
+- **components**: รายการของส่วนประกอบหรือวัสดุที่ใช้ในการผลิต
+  - **component_id**: รหัสหรือหมายเลขประจำส่วนประกอบ
+  - **name**: ชื่อส่วนประกอบ
+  - **quantity**: จำนวนที่ต้องใช้
+  - **unit_of_measure**: หน่วยวัดของส่วนประกอบ
+  - **cost**: ต้นทุนของส่วนประกอบ (ถ้าต้องการ)
+  
+```json
+{
+  "bom_id": "BOM001",
+  "product_id": "P001",
+  "components": [
+    {
+      "component_id": "C001",
+      "name": "Display Screen",
+      "quantity": 1,
+      "unit_of_measure": "unit",
+      "cost": 50.00
+    },
+    {
+      "component_id": "C002",
+      "name": "Battery",
+      "quantity": 1,
+      "unit_of_measure": "unit",
+      "cost": 10.00
+    }
+  ]
+}
+```
+
+### 3. Assembly (การประกอบ)
+- **assembly_id**: รหัสหรือหมายเลขประจำการประกอบ
+- **product_id**: รหัสผลิตภัณฑ์ที่การประกอบนี้อ้างอิง
+- **bom_id**: รหัส BOM ที่เกี่ยวข้อง
+- **steps**: รายละเอียดของขั้นตอนการประกอบ
+  - **step_number**: หมายเลขของขั้นตอน
+  - **description**: คำอธิบายของขั้นตอน
+  - **duration**: ระยะเวลาในการดำเนินการ (ถ้าต้องการ)
+  - **tools_needed**: เครื่องมือที่จำเป็นสำหรับขั้นตอนนี้ (ถ้าต้องการ)
+
+```json
+{
+  "assembly_id": "A001",
+  "product_id": "P001",
+  "bom_id": "BOM001",
+  "steps": [
+    {
+      "step_number": 1,
+      "description": "Attach the display screen to the main body.",
+      "duration": "10 minutes",
+      "tools_needed": ["Screwdriver", "Tweezers"]
+    },
+    {
+      "step_number": 2,
+      "description": "Install the battery in the designated compartment.",
+      "duration": "5 minutes",
+      "tools_needed": ["Screwdriver"]
+    }
+  ]
+}
+```
+
+### ข้อมูลเพิ่มเติมที่อาจพิจารณา
+- **Supply Chain Information**: ข้อมูลเกี่ยวกับผู้จัดจำหน่ายและแหล่งที่มาของวัสดุ
+- **Quality Control**: ขั้นตอนและข้อกำหนดสำหรับการตรวจสอบคุณภาพ
+- **Compliance and Standards**: ข้อมูลเกี่ยวกับข้อกำหนดและมาตรฐานที่ต้องปฏิบัติตาม
+
+การจัดทำ BOM ที่มีข้อมูลครบถ้วนและละเอียดช่วยให้การผลิตเป็นไปอย่างราบรื่นและมีประสิทธิภาพมากยิ่งขึ้น และสามารถช่วยให้การวางแผนการผลิตและการจัดการวัสดุเป็นไปอย่างถูกต้องและมีประสิทธิภาพ
+
+ข้อมูลเพิ่มเติมที่อาจพิจารณา
+Supply Chain Information (ข้อมูลการจัดซื้อ):
+
+supplier_id: รหัสผู้จัดจำหน่าย
+name: ชื่อส่วนประกอบ
+supplier_name: ชื่อผู้จัดจำหน่าย
+supplier_contact: ข้อมูลการติดต่อของผู้จัดจำหน่าย
+Quality Control (การตรวจสอบคุณภาพ):
+
+inspection_id: รหัสการตรวจสอบ
+product_id: รหัสผลิตภัณฑ์
+checkpoints: รายการจุดตรวจสอบคุณภาพ
+checkpoint_id: รหัสจุดตรวจสอบ
+description: คำอธิบายของจุดตรวจสอบ
+criteria: เกณฑ์การตรวจสอบ
+Compliance and Standards (การปฏิบัติตามมาตรฐาน):
+
+standard_id: รหัสมาตรฐาน
+description: คำอธิบายของมาตรฐาน
+regulation: ข้อกำหนดหรือข้อบังคับที่ต้องปฏิบัติตาม

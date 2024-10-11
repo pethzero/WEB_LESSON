@@ -1,0 +1,78 @@
+{
+    "assembly_id": "A001",
+    "product_id": "B001",
+    "bom_id": "BOM001",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Install the frame by attaching the steel tubes and welding rods.",
+        "duration": "30 minutes",
+        "tools_needed": ["Welding Machine", "Wrenches"],
+        "components_involved": [
+          {
+            "id": "comp002",
+            "name": "Frame",
+            "quantity": 1,
+            "unit_of_measure": "unit",
+            "children": [
+              {
+                "id": "comp003",
+                "name": "Steel Tubes",
+                "quantity": 3,
+                "unit_of_measure": "unit"
+              },
+              {
+                "id": "comp004",
+                "name": "Welding Rods",
+                "quantity": 10,
+                "unit_of_measure": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "step_number": 2,
+        "description": "Attach the wheels to the frame. Ensure the rims and spokes are properly secured.",
+        "duration": "20 minutes",
+        "tools_needed": ["Wrenches", "Spoke Tool"],
+        "components_involved": [
+          {
+            "id": "comp005",
+            "name": "Wheels",
+            "quantity": 2,
+            "unit_of_measure": "unit",
+            "children": [
+              {
+                "id": "comp006",
+                "name": "Rim",
+                "quantity": 1,
+                "unit_of_measure": "unit"
+              },
+              {
+                "id": "comp007",
+                "name": "Spokes",
+                "quantity": 20,
+                "unit_of_measure": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "step_number": 3,
+        "description": "Mount the seat onto the frame.",
+        "duration": "10 minutes",
+        "tools_needed": ["Allen Key"],
+        "components_involved": [
+          {
+            "id": "comp008",
+            "name": "Seat",
+            "quantity": 1,
+            "unit_of_measure": "unit"
+          }
+        ]
+      }
+    ]
+  }
+  

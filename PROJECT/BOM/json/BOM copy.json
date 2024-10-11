@@ -1,0 +1,21 @@
+{
+    "bom_id": "BOM001",
+    "product_id": "P001",
+    "components": [
+      {
+        "component_id": "C001",
+        "name": "Display Screen",
+        "quantity": 1,
+        "unit_of_measure": "unit",
+        "cost": 50.00
+      },
+      {
+        "component_id": "C002",
+        "name": "Battery",
+        "quantity": 1,
+        "unit_of_measure": "unit",
+        "cost": 10.00
+      }
+    ]
+  }
+  

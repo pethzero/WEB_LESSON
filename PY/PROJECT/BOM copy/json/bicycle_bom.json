@@ -1,0 +1,43 @@
+{
+    "item_id": "Bicycle",
+    "quantity": 1,
+    "children": [
+        {
+            "item_id": "Frame",
+            "quantity": 1,
+            "children": [
+                {
+                    "item_id": "Steel Tubes",
+                    "quantity": 3,
+                    "children": []
+                },
+                {
+                    "item_id": "Welding Rods",
+                    "quantity": 10,
+                    "children": []
+                }
+            ]
+        },
+        {
+            "item_id": "Wheels",
+            "quantity": 2,
+            "children": [
+                {
+                    "item_id": "Rim",
+                    "quantity": 1,
+                    "children": []
+                },
+                {
+                    "item_id": "Spokes",
+                    "quantity": 20,
+                    "children": []
+                }
+            ]
+        },
+        {
+            "item_id": "Seat",
+            "quantity": 1,
+            "children": []
+        }
+    ]
+}
