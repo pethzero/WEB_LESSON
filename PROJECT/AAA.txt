@@ -1,8 +1,0 @@
-
-
-data_search = [ { "material_no" : "LGP908-213198BTLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "908", "row_no" : 1 }
-, { "material_no" : "LGP01E-213198BTLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E", "row_no" : 2 }
-, { "material_no" : "LGP01E-210772DLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E", "row_no" : 3 }
-, { "material_no" : "LGP01E-210772CLF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01E", "row_no" : 4 }
-, { "material_no" : "LGP01S-177134LF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01S", "row_no" : 5 }
-, { "material_no" : "LGP01S-177135LF", "fg_material_no" : "LGP908-213198BTLF", "customer" : "LGP", "type" : "01S", "row_no" : 6 } ]
