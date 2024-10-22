@@ -44,12 +44,18 @@ restaurant = Restaurant("Good Eats", {"Burger": 150, "Pasta": 200})
 # เพิ่มเมนูใหม่และจำนวนสินค้าคงคลัง
 restaurant.add_menu_item("Salad", 100, 5)  # Salad มีในสต็อก 5 หน่วย
 restaurant.add_menu_item("Pasta", 200, 2)  # Pasta มีในสต็อก 2 หน่วย
+restaurant.add_menu_item("Burger", 150, 5)  # เพิ่ม Burger กลับไปและตั้งค่า stock 5 หน่วย
 
 # แสดงเมนูพร้อมสต็อก
 restaurant.show_menu()
 
 # ลบเมนู
-restaurant.remove_menu_item("Burger")  # ลบเมนู Burger (ซึ่งไม่มีในสินค้าคงคลัง)
+# restaurant.remove_menu_item("Burger")  # ลบเมนู Burger (ซึ่งไม่มีในสินค้าคงคลัง)
+
+
+# เพิ่มเมนู Burger กลับไปก่อนที่จะอัปเดตสต็อก
+# ทำการอัปเดต stock
+restaurant.update_stock("Burger", 10)  # เพิ่มสต็อก Burger อีก 10 หน่วย
 
 # แสดงเมนูอีกครั้ง
 restaurant.show_menu()
