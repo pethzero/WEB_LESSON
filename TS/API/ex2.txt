@@ -1,0 +1,80 @@
+จากคำถามของคุณ ดูเหมือนคุณต้องการจัดการการส่งข้อมูลจาก API ที่มีลักษณะเป็น JSON ซึ่งมีการส่งข้อมูลแบบลำดับที่ 1, 2, 3 (โดยอาจหมายถึงการส่งข้อมูลจากหลายๆ table หรือหลายๆ ชุดข้อมูลในลำดับที่ต้องการ) และคุณอาจจะต้องการส่งข้อมูลในลำดับนี้โดยไม่ให้การส่งข้อมูลชนกัน
+
+ในกรณีนี้ ถ้าคุณต้องการส่ง API ทีละตัวในลำดับตามที่คุณกล่าว (ส่ง API 1 เสร็จแล้วส่ง API 2 ต่อไป) คุณสามารถใช้ `switchMap`, `concatMap`, หรือ `mergeMap` ในการจัดการลำดับของการส่งข้อมูลจาก API แต่ละตัวให้เสร็จสมบูรณ์ก่อน
+
+### ตัวอย่างการใช้ `concatMap` สำหรับการส่ง API ทีละตัว
+หากคุณต้องการให้การส่งข้อมูลจากหลายๆ API ในลำดับที่ 1, 2, 3 เสร็จสมบูรณ์ทีละตัว การใช้ `concatMap` เป็นตัวเลือกที่เหมาะสม เพราะมันจะรอให้ API ก่อนหน้าเสร็จสมบูรณ์แล้วค่อยส่ง API ถัดไปตามลำดับ
+
+#### โค้ดตัวอย่าง (API ทีละตัว):
+
+```typescript
+import { of } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
+
+// ฟังก์ชันที่จำลองการส่งคำขอ API
+function fetchDataFromAPI1() {
+  return of({ data: 'Data from API 1' });
+}
+
+function fetchDataFromAPI2() {
+  return of({ data: 'Data from API 2' });
+}
+
+function fetchDataFromAPI3() {
+  return of({ data: 'Data from API 3' });
+}
+
+// สร้าง observable ที่เรียก API ทีละตัว
+of(1).pipe(
+  concatMap(() => fetchDataFromAPI1()), // ส่ง API 1
+  concatMap(() => fetchDataFromAPI2()), // ส่ง API 2 เมื่อ API 1 เสร็จ
+  concatMap(() => fetchDataFromAPI3())  // ส่ง API 3 เมื่อ API 2 เสร็จ
+).subscribe({
+  next: (response) => console.log(response),
+  complete: () => console.log('All APIs completed')
+});
+```
+
+ในตัวอย่างนี้:
+- **`concatMap`** จะทำให้เราแน่ใจว่า API 1 จะถูกเรียกก่อน และเมื่อ API 1 เสร็จแล้ว API 2 จะถูกเรียก และเมื่อ API 2 เสร็จแล้ว API 3 จะถูกเรียกตามลำดับ
+
+### ตัวอย่างการใช้ `switchMap` (เมื่อเราต้องการยกเลิกการดำเนินการเก่า):
+ถ้าคุณต้องการให้ **คำขอ API ก่อนหน้า** ถูกยกเลิกเมื่อมีคำขอใหม่เข้ามา (เช่นผู้ใช้พิมพ์ค้นหาข้อความใหม่ในขณะที่คำขอเก่ายังไม่ได้ตอบ), `switchMap` จะเหมาะสม
+
+#### โค้ดตัวอย่าง (การส่ง API แบบยกเลิกคำขอเก่า):
+
+```typescript
+import { of, Subject } from 'rxjs';
+import { switchMap, debounceTime, map } from 'rxjs/operators';
+
+const searchSubject = new Subject<string>();
+
+// สมมุติว่าเป็นการค้นหาและเรียก API ตามคำค้น
+function fetchDataFromAPI(query: string) {
+  return of({ data: `Search result for: ${query}` });
+}
+
+// เมื่อมีการพิมพ์คำค้นใหม่, จะส่งคำขอใหม่
+searchSubject.pipe(
+  debounceTime(300), // รอให้หยุดพิมพ์ 300ms
+  switchMap((query) => fetchDataFromAPI(query)) // ยกเลิกคำขอเก่าและส่งคำขอใหม่
+).subscribe({
+  next: (response) => console.log(response),
+  complete: () => console.log('Search completed')
+});
+
+// ตัวอย่างการส่งค่าให้ searchSubject
+searchSubject.next('Query 1');
+searchSubject.next('Query 2');
+searchSubject.next('Query 3');  // คำขอนี้จะเป็นคำขอที่ถูกดำเนินการสุดท้าย
+```
+
+ในตัวอย่างนี้:
+- **`switchMap`** จะยกเลิกการเรียก API ก่อนหน้าทุกครั้งที่มีการส่งคำขอใหม่เข้ามา โดยจะทำการเรียก API ใหม่ทุกครั้งที่ค่าที่ได้รับมีการเปลี่ยนแปลง
+
+### สรุปการเลือกใช้:
+
+- **`concatMap`** เหมาะสำหรับกรณีที่ต้องการให้การส่ง API แต่ละตัวเสร็จตามลำดับโดยไม่ให้ข้ามหรือทับซ้อนกัน
+- **`switchMap`** เหมาะสำหรับกรณีที่ต้องการยกเลิกคำขอที่กำลังทำงานอยู่ก่อนหน้า และเริ่มต้นคำขอใหม่ทุกครั้งที่มีการส่งข้อมูลใหม่ (โดยปกติใช้กับกรณีการค้นหาหรือกรณีที่ข้อมูลมีการเปลี่ยนแปลงบ่อย)
+
+ถ้าคุณต้องการส่งข้อมูลจาก API 1, 2, 3 ทีละตัวในลำดับที่แน่นอนโดยไม่ข้ามลำดับใดๆ ใช้ **`concatMap`** จะเหมาะสมที่สุด!

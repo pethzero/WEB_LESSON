@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lightning Blink Effect</title>
+  <style>
+    /* กำหนดพื้นฐานให้กับข้อความ */
+    .lightning-text {
+      font-size: 3em;
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      animation: lightning 0.5s infinite; /* ตั้งเวลาแอนิเมชัน */
+    }
+
+    /* สร้างแอนิเมชันให้ไฟกระพริบ */
+    @keyframes lightning {
+      0% {
+        opacity: 1;
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
+      }
+      50% {
+        opacity: 0; /* ทำให้ข้อความหายไปในช่วงนี้ */
+        text-shadow: 0 0 50px #fff, 0 0 100px #fff, 0 0 150px #ff00ff;
+      }
+      100% {
+        opacity: 1;
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="lightning-text">Transport</div>
+
+</body>
+</html>

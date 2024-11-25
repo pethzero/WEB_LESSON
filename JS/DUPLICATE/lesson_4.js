@@ -6,7 +6,6 @@ const data = [
   ];
   
   const uniqueUsers = Array.from(new Set(data.map(item => item.user)));
-  
   console.log(uniqueUsers); // ['0000001', '0000002']
   
 const uniqueUserMap = new Map(data.map(item => [item.user, item.name]));

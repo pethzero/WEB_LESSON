@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thai Flag Animation</title>
+<style>
+  /* ตั้งค่าเริ่มต้นให้กับข้อความ */
+  .wave-text {
+    font-size: 3em;
+    font-weight: bold;
+    background: linear-gradient(90deg, red, white, blue, white, red);
+    background-size: 200% 100%; /* ขนาดของพื้นหลังใหญ่กว่าตัวข้อความ เพื่อให้เอฟเฟกต์เคลื่อนที่ */
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: wave 5s infinite linear; /* กำหนดชื่อแอนิเมชัน */
+  }
+
+  /* กำหนด keyframes สำหรับการเคลื่อนที่ของสี */
+  @keyframes wave {
+    0% {
+      background-position: 0% 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="wave-text">Transport</div>
+
+</body>
+</html>

@@ -12,7 +12,7 @@ const items = [
 const selectedItemId = 2;
 
 // ค้นหารายการที่มี id ตรงกับ selectedItemId
-const selectedItem = filter_part.find(item => item.id === selectedItemId);
+const selectedItem = items.find(item => item.id === selectedItemId);
 
 // แสดงผล
 console.log(selectedItem);

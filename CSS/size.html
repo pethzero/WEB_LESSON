@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive Table with Calc</title>
+<style>
+  /* กำหนดสไตล์ให้กับตาราง */
+  .table-container {
+    width: calc(100% - 20px); /* ขนาดตารางจะปรับตามขนาดจอ ลดลง 20px */
+    margin: 10px;
+    overflow-x: auto; /* ทำให้สามารถเลื่อนดูได้เมื่อจอเล็ก */
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 12px calc(100% / 20); /* padding ขยับตามความกว้างตาราง */
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+
+  /* เพิ่มความยืดหยุ่นให้คอลัมน์ */
+  th:first-child,
+  td:first-child {
+    width: calc(30% - 10px); /* คอลัมน์แรกเป็น 30% ของตาราง ลดลง 10px */
+  }
+  th:last-child,
+  td:last-child {
+    width: calc(70% - 10px); /* คอลัมน์สุดท้ายเป็น 70% ของตาราง ลดลง 10px */
+  }
+
+  /* ตัวอย่างปรับขนาดฟอนต์ตามขนาดจอ */
+  body {
+    font-size: calc(12px + 0.5vw); /* ขนาดฟอนต์เพิ่มขึ้นตามความกว้างของ viewport */
+  }
+</style>
+</head>
+<body>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Column 1</th>
+        <th>Column 2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Data 1</td>
+        <td>Data 2</td>
+      </tr>
+      <tr>
+        <td>Data 3</td>
+        <td>Data 4</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

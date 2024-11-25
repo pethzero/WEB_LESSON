@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table from JS Array</title>
+    <style>
+        table {
+            width: 50%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Table of Details</h1>
+    <table id="detailsTable">
+        <thead>
+            <tr>
+                <th>M</th>
+                <th>P</th>
+                <th>C</th>
+                <th>WO</th>
+                <th>PLAN</th>
+                <th>WO QTY</th>
+                <th>BLANCE</th>
+                <th>FG QTY</th>
+                <th>SO</th>
+                <th>SO QTY</th>
+                <th>Var</th>
+                <th>LEVEL</th>
+                <th>QPA</th>
+                <th>Total</th>
+                <th>Parent Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <h3>Total Sum: <span id="totalSum">0</span></h3>
+
+    <script src="tree__all_above.js"></script>
+    <script>
+        // ฟังก์ชันสำหรับสร้างแถวในตาราง
+        function textLevel(data,level_no){
+            if(level_no == 2){
+                return data
+            }
+            return ''
+        }
+
+        function populateTable(details) {
+            const tableBody = document.querySelector('#detailsTable tbody');
+            let totalSum = 0;
+
+            details.forEach(detail => {
+                // คำนวณผลรวมของรายการ
+                const total = detail.quantity * detail.price;
+                totalSum += total;
+
+                // สร้างแถวของตาราง
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${detail.main_id}</td>
+                    <td>${detail.parent_id}</td>
+                    <td>${detail.child_id}</td>
+                    <td>${detail.work_order?detail.work_order:''}</td>
+                    <td>${detail.plan_order?detail.plan_order:''}</td>
+                    <td>${detail.wo_qty?detail.wo_qty:''}</td>
+                    <td>${detail.wo_balance?detail.wo_balance:''}</td>
+                    <td>${detail.fg_qty?detail.fg_qty:''}</td>
+                    <td>${detail.so?detail.so:''}</td>
+                    <td>${detail.so_qty?detail.so_qty:''}</td>
+                    <td>${detail.variance?detail.variance:''}</td>
+                    <td>${detail.level_no?detail.level_no:''}</td>
+                    <td>${detail.qpa?detail.qpa:''}</td>
+                    <td>${detail.total?'Summary '+' '+detail.total:''}</td>   
+                    <td>${detail.parent_total?'Summary '+' '+detail.parent_total:''}</td>
+                     <td>${detail.on_order?detail.on_order:''}</td>
+                    
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // แสดงผลรวมทั้งหมด
+            document.getElementById('totalSum').innerText = totalSum;
+        }
+
+        // เรียกฟังก์ชันเพื่อแสดงข้อมูล
+        populateTable(allDetails);
+        console.log(allDetails);
+
+    </script>
+
+</body>
+</html>

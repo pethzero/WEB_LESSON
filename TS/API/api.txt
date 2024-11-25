@@ -1,0 +1,97 @@
+นอกจาก `switchMap` แล้วใน RxJS ยังมีหลาย operator ที่สามารถช่วยให้คุณส่ง API ทีละตัวและรอให้แต่ละ API เสร็จตามลำดับได้ โดยไม่ต้องกังวลว่า request ไหนจะเสร็จก่อน ตัวอย่างเช่น:
+
+### 1. **concatMap**
+`concatMap` ใช้เพื่อดำเนินการเรียก API ทีละตัวตามลำดับโดยไม่ข้ามขั้นตอนใดๆ ถ้า API หนึ่งเสร็จแล้ว, มันจะส่งค่าไปยัง observable ถัดไปในลำดับ
+
+```typescript
+import { of } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
+
+// สมมุติว่าเรามีฟังก์ชันเรียก API
+function api1() {
+  return of('API 1 completed');
+}
+
+function api2() {
+  return of('API 2 completed');
+}
+
+function api3() {
+  return of('API 3 completed');
+}
+
+const source$ = of(1, 2, 3); // สามารถใช้ค่าใดๆในการกระตุ้น
+
+source$.pipe(
+  concatMap(() => api1()), // เรียก API 1
+  concatMap(() => api2()), // เรียก API 2 เมื่อ API 1 เสร็จ
+  concatMap(() => api3())  // เรียก API 3 เมื่อ API 2 เสร็จ
+).subscribe({
+  next: (res) => console.log(res),
+  complete: () => console.log('All API calls completed')
+});
+```
+
+**ลักษณะการทำงาน:**
+- `concatMap` จะทำให้ API ถูกเรียกทีละตัวตามลำดับ โดยการส่งค่าไปที่ `concatMap` แต่ละตัวจะรอให้ API ที่เรียกก่อนหน้านี้เสร็จสมบูรณ์ก่อนถึงจะไปเรียก API ถัดไป
+
+### 2. **mergeMap (หรือ flatMap)**
+`mergeMap` ทำให้เราสามารถรอผลลัพธ์จากหลายๆ observable พร้อมกันได้ (โดยไม่ต้องรอให้ทุกๆ API เสร็จตามลำดับ). อย่างไรก็ตาม, ถ้าต้องการให้ API เรียงตามลำดับ เราไม่ควรใช้ `mergeMap` แต่ใช้ `concatMap` หรือ `switchMap` แทนถ้าต้องการการรอทีละตัว.
+
+### 3. **exhaustMap**
+`exhaustMap` จะใช้เมื่อไม่ต้องการเริ่มการเรียก API ใหม่ถ้ายังมี request ก่อนหน้าที่กำลังทำงานอยู่ มันจะทำให้ต้องรอให้การเรียกครั้งแรกเสร็จสิ้นก่อน จึงจะเริ่มการเรียกครั้งถัดไป
+
+### 4. **forkJoin (สำหรับการทำงานแบบขนาน)**
+หากคุณต้องการส่งหลาย API พร้อมกันแต่ต้องการให้รอจนกว่าจะเสร็จทั้งหมด (เพื่อดำเนินการทีหลัง) ใช้ `forkJoin` ซึ่งจะให้ผลลัพธ์ของแต่ละ observable ที่เสร็จสมบูรณ์ในรูปแบบ array หรือ object
+
+```typescript
+import { forkJoin } from 'rxjs';
+
+// สมมุติว่าเรามีฟังก์ชันเรียก API
+function api1() {
+  return of('API 1 completed');
+}
+
+function api2() {
+  return of('API 2 completed');
+}
+
+function api3() {
+  return of('API 3 completed');
+}
+
+forkJoin([api1(), api2(), api3()]).subscribe({
+  next: (results) => console.log('All APIs completed:', results),
+  complete: () => console.log('All requests finished')
+});
+```
+
+**ลักษณะการทำงาน:**
+- `forkJoin` จะรอให้ API ทั้งหมดเสร็จสิ้นก่อน และจะให้ผลลัพธ์ทั้งหมดในรูปแบบ array หรือ object ตามลำดับการเรียกของ API
+- มันจะรอให้ทุก API เสร็จจึงส่งผลลัพธ์ไปทีเดียว
+
+### 5. **zip**
+`zip` คล้ายกับ `forkJoin` แต่มันจะรวมผลลัพธ์จากหลายๆ observable เมื่อแต่ละ observable ส่งค่าในลำดับเดียวกัน เช่น API 1, API 2, API 3 จะส่งผลลัพธ์พร้อมกันเมื่อทุกๆ API ส่งข้อมูลเสร็จ
+
+```typescript
+import { zip } from 'rxjs';
+
+zip(api1(), api2(), api3()).subscribe({
+  next: ([result1, result2, result3]) => {
+    console.log('Results:', result1, result2, result3);
+  },
+  complete: () => console.log('All requests finished')
+});
+```
+
+**ลักษณะการทำงาน:**
+- `zip` จะส่งข้อมูลที่แต่ละ API ส่งกลับมาในลำดับเดียวกัน (แต่ต้องให้แต่ละ API ส่งข้อมูลครบทุกตัวก่อนถึงจะส่งผลลัพธ์ทั้งหมด)
+
+### สรุป:
+- **`concatMap`** ใช้สำหรับการส่ง API ทีละตัวโดยเรียงลำดับ
+- **`switchMap`** จะยกเลิกการทำงานของ API ก่อนหน้าและเริ่มต้นใหม่เมื่อมีการส่งค่าใหม่
+- **`forkJoin`** ใช้เมื่อคุณต้องการให้ทุก API เสร็จสิ้นก่อนที่จะดำเนินการต่อ
+- **`zip`** คล้ายกับ `forkJoin` แต่จะรวมผลลัพธ์ของแต่ละ API ตามลำดับ
+- **`mergeMap`** จะรอให้แต่ละ API เสร็จสมบูรณ์ แต่สามารถส่งข้อมูลหลายๆ API พร้อมกันได้
+
+สำหรับกรณีที่ต้องการส่ง API 1 เสร็จไปส่ง API 2 และ API 3 ตามลำดับ **`concatMap`** เป็นตัวเลือกที่เหมาะสมที่สุด!

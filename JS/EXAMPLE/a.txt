@@ -1,0 +1,49 @@
+ในโค้ดของคุณ ข้อมูล JSON ที่อ่านมาจากไฟล์จะไม่ได้ถูกคืนค่ากลับในตัวแปร `data_map` อย่างที่คาดไว้ เพราะฟังก์ชัน `fs.readFile` เป็น asynchronous (ไม่ทำงานในลำดับที่กำหนดไว้) ดังนั้น การพิมพ์ `console.log(data_map)` จะเรียกใช้ก่อนที่จะอ่านไฟล์เสร็จ ทำให้ `data_map` เป็น `undefined`
+
+เพื่อแก้ปัญหานี้ สามารถใช้ `fs.readFileSync` สำหรับการอ่านไฟล์แบบ synchronous (แบบรอให้ทำงานเสร็จก่อน) หรือถ้าต้องการใช้ `fs.readFile` ให้ทำงานแบบ asynchronous ต่อไป ให้ใช้ callback หรือ promise แทน
+
+### วิธีที่ 1: ใช้ `fs.readFileSync` (แบบ synchronous)
+
+```javascript
+const fs = require('fs');
+
+// ระบุพาธของไฟล์ JSON
+const filePath = 'D:\\รายงาน\\7_MATCRTL\\BK\\log\\FinalData_202411081451.json';
+
+try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    const data_map = JSON.parse(data);
+    console.log(data_map);  // แสดงข้อมูล JSON
+} catch (err) {
+    console.error('Error reading or parsing file:', err);
+}
+```
+
+ในวิธีนี้ `fs.readFileSync` จะรอจนกว่าไฟล์จะถูกอ่านและแปลงข้อมูลเรียบร้อย ก่อนที่จะพิมพ์ผลลัพธ์ ทำให้ได้ผลตามลำดับที่คาดหวัง
+
+### วิธีที่ 2: ใช้ `fs.readFile` ร่วมกับ `Promise` (แบบ asynchronous)
+
+```javascript
+const fs = require('fs').promises;
+
+// ระบุพาธของไฟล์ JSON
+const filePath = 'D:\\รายงาน\\7_MATCRTL\\BK\\log\\FinalData_202411081451.json';
+
+async function loadData() {
+    try {
+        const data = await fs.readFile(filePath, 'utf8');
+        const data_map = JSON.parse(data);
+        console.log(data_map);  // แสดงข้อมูล JSON
+        return data_map;
+    } catch (err) {
+        console.error('Error reading or parsing file:', err);
+        return null;
+    }
+}
+
+loadData().then(data_map => {
+    console.log("ข้อมูลที่อ่านได้:", data_map);
+});
+```
+
+ในวิธีนี้เราสร้างฟังก์ชัน `loadData` เป็น asynchronous และใช้ `await` เพื่อรอให้การอ่านไฟล์เสร็จก่อน
